@@ -11,6 +11,19 @@ let util = {
         }
 
         return qs;
+    },
+
+    isEmpty(value) {
+        if(typeof value === 'string'){
+            value = value.trim();
+            return value.length === 0 || value === '' || value === 'null';
+        } else {
+            return value === undefined || value == null || value.length === 0;
+        }
+    }
+
+    , isNotEmpty(value) {
+        return !this.isEmpty(value);
     }
 };
 

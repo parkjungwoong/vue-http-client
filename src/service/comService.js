@@ -19,6 +19,26 @@ let service = {
             throw e;
         }
         return res;
+    },
+
+    async postJwtExample(param) {
+        let res = {};
+        try {
+            res = await http.postJwt('/post',param);
+        } catch (e) {
+            throw e;
+        }
+        return res;
+    },
+
+    async getJwtExample(param) {
+        let res = {};
+        try {
+            res = await http.getJwt('/get',param);
+        } catch (e) {
+            throw e;
+        }
+        return res;
     }
 };
 

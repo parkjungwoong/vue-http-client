@@ -3,8 +3,13 @@
         <h1>{{ msg }}</h1>
         <button v-on:click="post()">post request</button>
         <button v-on:click="get()">get request</button>
-        <button v-on:click="">post with jwt request</button>
-        <button v-on:click="">get with jwt request</button>
+        <button v-on:click="postJwt()" style="margin-left: 10px">post with jwt request</button>
+        <button v-on:click="getJwt()">get with jwt request</button>
+        <hr>
+        <button v-on:click="saveToken(false)">saveAccessToken</button>
+        <button v-on:click="saveToken(true)">saveRefreshToken</button>
+        <p>accessToken : {{aTokenState}} / reFreshToken : {{rTokenState}}</p>
+        <hr>
         <p>response {{procMsg}}</p>
         <textarea class="result" v-model="response" rows="25" disabled></textarea>
     </div>
@@ -12,16 +17,23 @@
 
 <script>
     import comService from '../service/comService'
+    import jwtUtil from '../common/jwtUtil'
 
     export default {
         name: 'HelloWorld',
+        created() {
+            //로컬 데이터 초기화
+            localStorage.clear();
+        },
         props: {
             msg: String
         },
         data() {
             return {
                 procMsg: '',
-                response: '{click button}'
+                response: '{click button}',
+                aTokenState: 'empty',
+                rTokenState: 'empty'
             }
         },
         methods: {
@@ -48,6 +60,39 @@
                     alert(e);
                 }
                 this.procMsg = '';
+            },
+            async postJwt() {
+                this.procMsg = '요청중...';
+                try {
+                    let res = await comService.postJwtExample({sendData: 'postJwt 테스트',data3:'1234'});
+                    this.response = JSON.stringify(res, null, 2);
+
+                } catch (e) {
+                    this.response = JSON.stringify(e, null, 2);
+                    alert(this.response);
+                }
+                this.procMsg = '';
+            },
+            async getJwt() {
+                this.procMsg = '요청중...';
+                try {
+                    let res = await comService.getJwtExample({sendData: 'postJwt 테스트',data3:'1234'});
+                    this.response = JSON.stringify(res, null, 2);
+
+                } catch (e) {
+                    this.response = JSON.stringify(e, null, 2);
+                    alert(this.response);
+                }
+                this.procMsg = '';
+            },
+            saveToken(isRefresh) {
+                if(isRefresh) {
+                    jwtUtil.setRefreshToken(`refresh.fakeToken.fakeToken`);
+                    this.rTokenState = `ready`;
+                } else {
+                    jwtUtil.setAccessToken(`access.fakeToken.fakeToken`);
+                    this.aTokenState = `ready`;
+                }
             }
         }
     }
