@@ -1,6 +1,9 @@
 <template>
     <div class="hello">
         <h1>{{ msg }}</h1>
+        <h3>저장된 jwt 토큰 확인 방법</h3>
+        <p>jwt 토큰은 크롬기준, F12(개발자도구) -> Application탭 -> Storage/local Storage에 저장 확인 가능 </p>
+        <hr>
         <button v-on:click="post()">post request</button>
         <button v-on:click="get()">get request</button>
         <button v-on:click="postJwt()" style="margin-left: 10px">post with jwt request</button>
@@ -8,6 +11,8 @@
         <hr>
         <button v-on:click="saveToken(false)">saveAccessToken</button>
         <button v-on:click="saveToken(true)">saveRefreshToken</button>
+        <button v-on:click="saveToken(false,true)" style="margin-left: 10px">saveExpiredAccessToken</button>
+        <button v-on:click="saveToken(true,true)">saveExpiredRefreshToken</button>
         <p>accessToken : {{aTokenState}} / reFreshToken : {{rTokenState}}</p>
         <hr>
         <p>response {{procMsg}}</p>
@@ -85,12 +90,13 @@
                 }
                 this.procMsg = '';
             },
-            saveToken(isRefresh) {
+            saveToken(isRefresh,exp) {
+                let fakeToken = jwtUtil.getFakeToken(exp);
                 if(isRefresh) {
-                    jwtUtil.setRefreshToken(`refresh.fakeToken.fakeToken`);
+                    jwtUtil.setRefreshToken(fakeToken);
                     this.rTokenState = `ready`;
                 } else {
-                    jwtUtil.setAccessToken(`access.fakeToken.fakeToken`);
+                    jwtUtil.setAccessToken(fakeToken);
                     this.aTokenState = `ready`;
                 }
             }

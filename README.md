@@ -58,7 +58,7 @@ export default {
     async getJwt(url, param, token) {
         //jwt 토큰을 해더에 세팅 후 get 요청
     },
-    setAuthHeader(token) {
+    async setAuthHeader(token) {
         //jwt 토큰 세팅된 해더 생성, jwt 토큰 유효성 체크
     },
     httpSuccessHandler(res) {
@@ -68,7 +68,32 @@ export default {
         //api 실패 응답시 공통 처리할 부분
     }
 ```
-
+### jwt 토큰 관리
+/src/common/jwtUil.js 파일
+```javascript
+    setAccessToken(token) {
+        //로컬 저장소에 엑세스 토큰 저장 
+    },
+    async getAccessToken() {
+        //로컬 저장소에서 엑세스 토큰 반환
+        //엑세스 토큰 만료시 갱신 후 반환 처리 함
+    },
+    setRefreshToken(token) {
+        //로컬 저장소에 리프레시 토큰 저장
+    },
+    getRefreshToken() {
+        //로컬 저장소에서 리프레시 토큰 반환 
+    },
+    isExpiredToken(token) {
+        //토큰 만료기간 확인
+    },
+    getPayLoad(token) {
+        //토큰 payload 정보 반환
+    },
+    async tokenRefresh() {
+        //엑세스 토큰 갱신
+    }
+```
 
 
 

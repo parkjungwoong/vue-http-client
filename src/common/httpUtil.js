@@ -42,23 +42,25 @@ let httpUtil = {
         return this.httpSuccessHandler(res);
     },
     async postJwt(url, param, token) {
-        let header = this.setAuthHeader(token);
+        let header = await this.setAuthHeader(token);
         return await this.post(url, param, header);
     },
     async getJwt(url, param, token) {
-        let header = this.setAuthHeader(token);
+        let header = await this.setAuthHeader(token);
         return await this.get(url, param, header);
     },
-    setAuthHeader(token) {
+    async setAuthHeader(token) {
         let header = {
             'Content-Type' : commonHeader["Content-Type"]
         };
 
         //요청 인증 토큰값의 기본값은 accessToken
-        let jwtToken = token ? token : jwtUtil.getAccessToken();
+        let jwtToken = token ? token : await jwtUtil.getAccessToken();
 
-        //todo: 토큰 만료일 체크
-        //todo: 엑세스 토큰 만료시 리프레시 토큰으로 갱신, 리프레시 토큰이 만료시 인증 만료 에러 처리
+        //토큰 만료일 체크
+        if(jwtUtil.isExpiredToken(jwtToken)) {
+            throw {err:'토큰이 만료되었습니다.'};
+        }
 
         header['Authorization'] = `Bearer ${jwtToken}`;
 
