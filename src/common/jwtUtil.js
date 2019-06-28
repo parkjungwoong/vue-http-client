@@ -37,7 +37,7 @@ let jwtUtil = {
         return Math.floor(+new Date()/1000) >= exp;
     },
     getPayLoad(token) {
-        return JSON.parse(window.atob(token.split('.')[1]));
+        return util.isEmpty(token) ? '' : JSON.parse(window.atob(token.split('.')[1]));
     },
     async tokenRefresh() {
         let newAccessToken = '';
@@ -46,7 +46,7 @@ let jwtUtil = {
             let res = await http.postJwt('/post',{accessToken: this.getFakeToken()},this.getRefreshToken());
             newAccessToken = res.json.accessToken;
             this.setAccessToken(newAccessToken);
-            console.log('엑세스 토큰이 갱신됨',newAccessToken);
+            //console.log('엑세스 토큰이 갱신됨',newAccessToken);
         } catch (e) {
             throw e;
         }
