@@ -1,6 +1,7 @@
 # vue-http-client
-axios를 패키징하여 서비스 로직에서 사용하기 편하도록 만들어봤습니다.\
-특히 jwt 토큰을 이용하는 서비스에 대응할 수 있도록 만들어졌습니다.
+Vue 개발시 대부분의 api서버와 통신하는 로직이 필요합니다.\
+이때 vue 파일마다 http요청 코드를 중복으로 사용하지 않도록 axios를 패키징하여 별도 서비스 로직에서 사용하기 편하도록 만들어봤습니다.\
+추가적으로 OAuth를 사용하는 서비스를 개발할때도 대응할 수 있도록 만들어졌습니다.
 ### Project setup
 ```
 git clone https://github.com/parkjungwoong/vue-http-client.git
@@ -12,6 +13,11 @@ npm install
 npm run serve
 ```
 
+### Run test
+```
+npm run test:unit
+```
+
 ### 구성
 vue-cli를 이용한 기본 예제 프로젝트 기반으로 만들어졌습니다.
 ```
@@ -20,11 +26,44 @@ vue-cli를 이용한 기본 예제 프로젝트 기반으로 만들어졌습니�
     ├─common     // 공통 유틸리티 메소드
     ├─components // 뷰 컴포넌트
     └─service    // 서비스 로직
+    
+└─tests          //테스트 코드          
+    └─unit       
+        └─common  
 ```
 
 ### 호출방식
-Vue 컴포넌트에서 service 로직을 호출하여 사용합니다.
+service 로직을 작성 후 Vue에서 호출하는 방식으로 개발하여 뷰와 서비스 로직을 분리합니다.
+
+service 로직에서 http 요청시 아래와 같이 호출하여 사용합니다.
 ```javascript
+/**
+* exService.js
+* 비지니스 로직을 분리하여 여기에 작성합니다.
+*/
+import http from '../common/httpUtil'
+
+let service = {
+    async exService(param) {
+        //데이터 벨리데이션 및 가공처리, param 변경시 object 복사 후 사용, 서비스에서 param 변경시 vue도 같이 변경
+        let res = {};
+        try {
+            res = await http.post('/post',param);
+        } catch (e) {
+            throw e;
+        }
+        return res;
+    }
+}
+export default service;
+```
+
+Vue에서 아래와 같이 service를 호출하여 중복 코드를 최소화 합니다.
+```javascript
+/**
+* ex.vue
+* 비지니스 로직은 서비스에서 호출하여 사용합니다.
+*/
 import exService from '../service/exService'
 
 export default {
@@ -33,12 +72,14 @@ export default {
         
         methods: {
             test() {
-                let result = exService.somethig();
                 //import한 서비스의 함수를 호출하여 사용한다.
+                let result = exService.somethig();
+                this.msg = result.msg;
             }
         }
 }
 ```
+## 주요 유틸 함수
 
 ### http 요청 처리
 /src/common/httpUtil.js 파일
