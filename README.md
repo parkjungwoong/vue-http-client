@@ -2,6 +2,8 @@
 Vue 개발시 대부분의 api서버와 통신하는 로직이 필요합니다.\
 이때 vue 파일마다 http요청 코드를 중복으로 사용하지 않도록 axios를 패키징하여 별도 서비스 로직에서 사용하기 편하도록 만들어봤습니다.\
 추가적으로 OAuth를 사용하는 서비스를 개발할때도 대응할 수 있도록 만들어졌습니다.
+
+![실행화면](./example.png)
 ### Project setup
 ```
 git clone https://github.com/parkjungwoong/vue-http-client.git
